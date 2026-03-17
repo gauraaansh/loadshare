@@ -1,0 +1,335 @@
+# ============================================================
+# ARIA — Docker Compose
+# ============================================================
+# Prerequisites on host machine:
+#   - Docker Engine 24+
+#   - Docker Compose v2
+#   - nvidia-container-toolkit installed and configured
+#   - nvidia-docker2 runtime registered
+#
+# First time setup:
+#   cp .env.example .env          # fill in your values
+#   docker compose up -d postgres redis
+#   docker compose up -d vllm     # takes a few mins to load model
+#   docker compose up -d          # bring up everything else
+#
+# GPU check:
+#   docker run --rm --gpus all nvidia/cuda:12.1-base nvidia-smi
+# ============================================================
+
+name: aria
+
+# ── SHARED NETWORK ───────────────────────────────────────────
+# All services communicate on this internal bridge.
+# Only ports explicitly mapped reach the host.
+networks:
+  aria-net:
+    driver: bridge
+
+# ── NAMED VOLUMES ────────────────────────────────────────────
+volumes:
+  postgres-data:
+  redis-data:
+  vllm-model-cache:       # HuggingFace model weights persist across restarts
+  ollama-models:
+  ml-models:              # trained .joblib / .keras files
+
+# ============================================================
+services:
+
+  # ── POSTGRES ───────────────────────────────────────────────
+  # TimescaleDB image = PostgreSQL + timescaledb + postgis bundled.
+  postgres:
+    image: timescale/timescaledb-ha:pg16-all-amd64
+    container_name: aria-postgres
+    restart: unless-stopped
+    networks:
+      - aria-net
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"      # expose to host for psql / DBeaver
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      # Schema auto-runs on first start (init scripts)
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./database/seed_zones.sql:/docker-entrypoint-initdb.d/02_seed_zones.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ── REDIS ──────────────────────────────────────────────────
+  # Agent state, zone density cache, pub/sub for WebSocket.
+  redis:
+    image: redis:7-alpine
+    container_name: aria-redis
+    restart: unless-stopped
+    networks:
+      - aria-net
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 2gb
+      --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ── vLLM ───────────────────────────────────────────────────
+  # Serves Qwen2.5-32B across both RTX 3090s.
+  # OpenAI-compatible API at :8000 — agents call this like GPT-4o.
+  # Model downloads from HuggingFace on first start (~20GB).
+    # Set HF_TOKEN in .env if model requires auth.
+  vllm:
+    image: vllm/vllm-openai:v0.7.3
+    container_name: aria-vllm
+    restart: unless-stopped
+    ipc: host
+    shm_size: '20gb'
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    ulimits:
+      memlock: -1
+      stack: 67108864
+    networks:
+      - aria-net
+    ports:
+      - "${VLLM_PORT:-8000}:8000"
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      HF_TOKEN: ${HF_TOKEN:-}
+      HUGGING_FACE_HUB_TOKEN: ${HF_TOKEN:-}
+    volumes:
+      - /mnt/shared/hugging_face:/root/.cache/huggingface
+    command: >
+      --model ${VLLM_MODEL}
+      --tensor-parallel-size ${VLLM_TENSOR_PARALLEL_SIZE}
+      --max-model-len ${VLLM_MAX_MODEL_LEN}
+      --gpu-memory-utilization ${VLLM_GPU_MEMORY_UTILIZATION}
+      --dtype auto
+      --enable-auto-tool-choice
+      --tool-call-parser hermes
+      --host 0.0.0.0
+      --port 8000
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8000/v1/models || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s    # vLLM needs time to download + load model weights
+  
+  # ── OLLAMA ─────────────────────────────────────────────────
+  # Embedding model for any semantic similarity tasks.
+  # Runs on CPU to leave GPU VRAM fully to vLLM.
+  ollama:
+    image: ollama/ollama:latest
+    container_name: aria-ollama
+    restart: unless-stopped
+    networks:
+      - aria-net
+    ports:
+      - "${OLLAMA_PORT:-11434}:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    # Pull embedding model on startup only if not already present
+    entrypoint: >
+      /bin/sh -c "ollama serve &
+      sleep 5 &&
+      ollama list | grep -q ${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text} ||
+      ollama pull ${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text} ;
+      wait"
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list >/dev/null 2>&1 || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ── FASTAPI ML SERVER ───────────────────────────────────────
+  # Internal-only ML model serving.
+  # Exposes: /internal/predict/* endpoints.
+  # NOT reachable from outside docker network.
+  fastapi-ml:
+    build:
+      context: ./services/ml-server
+      dockerfile: Dockerfile
+    container_name: aria-ml-server
+    restart: unless-stopped
+    networks:
+      - aria-net
+    # No host port mapping — intentionally internal only
+    expose:
+      - "8002"
+    environment:
+      ML_PORT: ${ML_PORT:-8002}
+      ML_INTERNAL_KEY: ${ML_INTERNAL_KEY:-aria-ml-internal-dev-key}
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      MODEL_DIR: /app/models
+    volumes:
+      - ./services/ml-server/models:/app/models:ro   # trained model files from repo
+      - ./services/ml-server:/app:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8002/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # ── FASTAPI MCP SERVER ─────────────────────────────────────
+  # The heart of the system.
+  # Exposes MCP tools publicly + runs LangGraph agent pipeline.
+  # Depends on all other backend services.
+  fastapi-mcp:
+    build:
+      context: ./services/mcp-server
+      dockerfile: Dockerfile
+    container_name: aria-mcp-server
+    restart: unless-stopped
+    networks:
+      - aria-net
+    ports:
+      - "${MCP_PORT:-8001}:8001"       # exposed: MCP clients + frontend connect here
+    environment:
+      MCP_PORT: ${MCP_PORT:-8001}
+      MCP_API_KEY: ${MCP_API_KEY}
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      VLLM_HOST: ${VLLM_HOST}
+      VLLM_MODEL: ${VLLM_MODEL}
+      ML_HOST: ${ML_HOST}
+      ML_INTERNAL_KEY: ${ML_INTERNAL_KEY:-aria-ml-internal-dev-key}
+      EVENT_STREAM_HOST: ${EVENT_STREAM_HOST:-http://event-stream:8003}
+      OLLAMA_HOST: ${OLLAMA_HOST}
+      LANGCHAIN_TRACING_V2: ${LANGCHAIN_TRACING_V2:-false}
+      LANGCHAIN_API_KEY: ${LANGCHAIN_API_KEY:-}
+      LANGCHAIN_PROJECT: ${LANGCHAIN_PROJECT:-aria}
+      CYCLE_INTERVAL_MINS: ${CYCLE_INTERVAL_MINS:-15}
+      DEAD_ZONE_RISK_THRESHOLD: ${DEAD_ZONE_RISK_THRESHOLD:-0.60}
+      RESTAURANT_RISK_THRESHOLD: ${RESTAURANT_RISK_THRESHOLD:-0.65}
+      EPH_TARGET_SUPPLEMENTARY: ${EPH_TARGET_SUPPLEMENTARY:-90.0}
+      EPH_TARGET_DEDICATED: ${EPH_TARGET_DEDICATED:-100.0}
+      HEALTH_SCORE_THRESHOLD: ${HEALTH_SCORE_THRESHOLD:-40.0}
+      CHURN_SIGNAL_SESSIONS: ${CHURN_SIGNAL_SESSIONS:-3}
+      DEAD_ZONE_DENSITY_THRESHOLD: ${DEAD_ZONE_DENSITY_THRESHOLD:-0.3}
+    volumes:
+      - ./services/mcp-server:/app:ro
+      - ./ARIA_DOCS.md:/docs/ARIA_DOCS.md:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      vllm:
+        condition: service_healthy
+      fastapi-ml:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8001/health', timeout=3)",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # ── EVENT STREAM SIMULATOR ─────────────────────────────────
+  # Generates continuous realistic events and writes to postgres.
+  # Simulates: order created, rider location updates,
+  # pickup timestamps, delivery completions.
+  # Also contains demo anomaly injection scripts.
+  event-stream:
+    build:
+      context: ./services/event-stream
+      dockerfile: Dockerfile
+    container_name: aria-event-stream
+    restart: unless-stopped
+    networks:
+      - aria-net
+    ports:
+      - "${EVENT_STREAM_PORT:-8003}:8003"    # control API + anomaly injection
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      SEED_RIDER_COUNT: ${SEED_RIDER_COUNT:-500}
+      SEED_RESTAURANT_COUNT: ${SEED_RESTAURANT_COUNT:-200}
+      TIME_SCALE: ${TIME_SCALE:-10.0}
+      SIMULATION_PEAK_RIDERS: ${SIMULATION_PEAK_RIDERS:-150}
+      SIMULATION_OFFPEAK_RIDERS: ${SIMULATION_OFFPEAK_RIDERS:-40}
+      CYCLE_INTERVAL_MINS: ${CYCLE_INTERVAL_MINS:-15}
+      EVENT_STREAM_PORT: ${EVENT_STREAM_PORT:-8003}
+    volumes:
+      - ./services/event-stream:/app:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8003/health', timeout=3)",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    # Does not need vllm or ml-server
+
+  # ── NEXT.JS FRONTEND ───────────────────────────────────────
+  frontend:
+    build:
+      context: ./services/frontend
+      dockerfile: Dockerfile
+    container_name: aria-frontend
+    restart: unless-stopped
+    networks:
+      - aria-net
+    ports:
+      - "3000:3000"
+    environment:
+      # Server-side (Next.js API routes → MCP server over internal Docker network)
+      MCP_INTERNAL_URL:        http://aria-mcp-server:8001
+      MCP_API_KEY:             ${MCP_API_KEY}
+      EVENT_STREAM_INTERNAL_URL: http://aria-event-stream:8003
+      # Client-side (browser WebSocket — must use host-reachable address)
+      NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL:-ws://localhost:8001/ws}
+    depends_on:
+      fastapi-mcp:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000 >/dev/null || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
