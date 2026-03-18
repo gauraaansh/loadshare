@@ -116,6 +116,9 @@ services:
       NVIDIA_VISIBLE_DEVICES: all
       HF_TOKEN: ${HF_TOKEN:-}
       HUGGING_FACE_HUB_TOKEN: ${HF_TOKEN:-}
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     volumes:
       - /mnt/shared/hugging_face:/root/.cache/huggingface
     command: >
@@ -124,6 +127,7 @@ services:
       --max-model-len ${VLLM_MAX_MODEL_LEN}
       --gpu-memory-utilization ${VLLM_GPU_MEMORY_UTILIZATION}
       --dtype auto
+      --enforce-eager
       --enable-auto-tool-choice
       --tool-call-parser hermes
       --host 0.0.0.0
@@ -239,6 +243,7 @@ services:
     volumes:
       - ./services/mcp-server:/app:ro
       - ./ARIA_DOCS.md:/docs/ARIA_DOCS.md:ro
+      - ./ARIA_NAV.md:/docs/ARIA_NAV.md:ro
     depends_on:
       postgres:
         condition: service_healthy

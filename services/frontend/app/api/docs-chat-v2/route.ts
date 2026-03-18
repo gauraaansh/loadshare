@@ -1,6 +1,6 @@
 /**
- * /api/docs-chat — proxy to MCP server /docs-chat/chat
- * Injects X-API-Key server-side, forwards body, streams response back.
+ * /api/docs-chat-v2 — SSE proxy to MCP server /docs-chat/chat-v2
+ * Forwards text/event-stream response for split-panel UI.
  */
 
 import { NextRequest } from "next/server";
@@ -8,11 +8,11 @@ import { NextRequest } from "next/server";
 const MCP_INTERNAL = process.env.MCP_INTERNAL_URL ?? "http://mcp-server:8001";
 const MCP_API_KEY  = process.env.MCP_API_KEY       ?? "aria_mcp_key_change_me";
 
-export const runtime    = "nodejs";
-export const maxDuration = 60;
+export const runtime     = "nodejs";
+export const maxDuration = 120;
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  const body    = await req.json();
   const message: string = body?.message ?? "";
   const mode:    string = body?.mode    ?? "vector";
 
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const upstream = await fetch(`${MCP_INTERNAL}/docs-chat/chat`, {
+    const upstream = await fetch(`${MCP_INTERNAL}/docs-chat/chat-v2`, {
       method:  "POST",
       headers: {
         "Content-Type": "application/json",
@@ -35,13 +35,16 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: err }, { status: upstream.status });
     }
 
-    // Forward the stream directly to the client
     return new Response(upstream.body, {
-      headers: { "Content-Type": "text/plain; charset=utf-8" },
+      headers: {
+        "Content-Type":  "text/event-stream; charset=utf-8",
+        "Cache-Control": "no-cache",
+        "Connection":    "keep-alive",
+      },
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error("[docs-chat proxy]", msg);
+    console.error("[docs-chat-v2 proxy]", msg);
     return Response.json({ error: "MCP server unreachable" }, { status: 502 });
   }
 }

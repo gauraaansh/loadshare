@@ -41,7 +41,7 @@ from redis_client      import init_redis, close_redis, get_redis
 from ws_manager       import ws_manager
 from scheduler        import start_scheduler, stop_scheduler, run_cycle, reschedule_cycle
 from tools            import router as tools_router
-from docs_chat        import router as docs_chat_router
+from docs_chat        import router as docs_chat_router, docs_build_index as _build_docs_index
 import embedding_client
 
 log = structlog.get_logger()
@@ -78,6 +78,13 @@ async def lifespan(app: FastAPI):
                 log.info("auto-rescheduled on startup", time_scale=ts)
     except Exception:
         pass   # event-stream not ready yet — scheduler stays at default 15 min
+
+    # Auto-build PageIndex tree (fast, no LLM calls, rebuilds on every start)
+    try:
+        result = await _build_docs_index()
+        log.info("docs_index_auto_built", total=result["total"])
+    except Exception as exc:
+        log.warning("docs_index_auto_build_failed", error=str(exc))
 
     log.info("mcp server started", port=PORT, cycle_interval_mins=CYCLE_INTERVAL_MINS)
 

@@ -225,7 +225,7 @@ CREATE TABLE supervisor_episode_memory (
     city                TEXT[] NOT NULL DEFAULT '{}',  -- active cities this cycle (array overlap filter)
     outcome_1cycle      JSONB,                         -- null until grounded after +1 cycle
     outcome_3cycle      JSONB,                         -- null until grounded after +3 cycles
-    embedding           vector(768) NOT NULL,           -- nomic-embed-text output (768 dims)
+    embedding           vector(4096) NOT NULL,           -- qwen3-embedding output (4096 dims)
     embedding_status    VARCHAR(10) NOT NULL DEFAULT 'ok', -- 'ok' | 'failed' (failed = zero vector, excluded from retrieval)
     created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -499,7 +499,7 @@ CREATE TABLE IF NOT EXISTS docs_chunks (
     section    TEXT NOT NULL,
     level      INT  NOT NULL,
     content    TEXT NOT NULL,
-    embedding  vector(768),
+    embedding  vector(4096),
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
