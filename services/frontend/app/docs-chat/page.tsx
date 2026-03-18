@@ -368,7 +368,7 @@ export default function DocsChatPage() {
     setActiveMsgIdx(assistantIdx);
 
     try {
-      const res = await fetch("/api/docs-chat-v2", {
+      const res = await fetch("/aria/api/docs-chat-v2", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({ message: query, mode }),
