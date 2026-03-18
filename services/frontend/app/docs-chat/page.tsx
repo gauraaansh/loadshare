@@ -322,7 +322,7 @@ export default function DocsChatPage() {
   const [messages, setMessages]           = useState<Message[]>([]);
   const [input, setInput]                 = useState("");
   const [loading, setLoading]             = useState(false);
-  const [mode, setMode]                   = useState<Mode>("vector");
+  const [mode, setMode]                   = useState<Mode>("pageindex");
   const [activeMsgIdx, setActiveMsgIdx]   = useState<number>(-1);
   const bottomRef                         = useRef<HTMLDivElement>(null);
   const inputRef                          = useRef<HTMLTextAreaElement>(null);
