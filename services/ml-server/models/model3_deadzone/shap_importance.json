@@ -1,0 +1,28 @@
+{
+  "classifier": {
+    "is_ld_order": 0.4475775361061096,
+    "dist_x_dead_rate": 0.15236219763755798,
+    "dest_zone_type_enc": 0.1261064112186432,
+    "historical_dead_rate": 0.10485006123781204,
+    "peripheral_ld_risk": 0.1021544337272644,
+    "dist_from_home_zone_km": 0.024975042790174484,
+    "is_weekend": 0.010648606345057487,
+    "current_density_ratio": 0.008213031105697155,
+    "day_of_week": 0.008177836425602436,
+    "city_tier_enc": 0.007672105450183153,
+    "hour_of_day": 0.0072627286426723
+  },
+  "regressor": {
+    "dist_from_home_zone_km": 0.7970134019851685,
+    "city_tier_enc": 0.034189894795417786,
+    "dest_zone_type_enc": 0.0325082428753376,
+    "dist_x_dead_rate": 0.027417991310358047,
+    "peripheral_ld_risk": 0.027403971180319786,
+    "current_density_ratio": 0.02542981691658497,
+    "hour_of_day": 0.023247161880135536,
+    "day_of_week": 0.02179940789937973,
+    "historical_dead_rate": 0.0109901437535882,
+    "is_weekend": 0.0,
+    "is_ld_order": 0.0
+  }
+}

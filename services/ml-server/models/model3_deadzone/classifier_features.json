@@ -1,0 +1,13 @@
+[
+  "dest_zone_type_enc",
+  "city_tier_enc",
+  "hour_of_day",
+  "day_of_week",
+  "is_weekend",
+  "is_ld_order",
+  "dist_from_home_zone_km",
+  "current_density_ratio",
+  "historical_dead_rate",
+  "peripheral_ld_risk",
+  "dist_x_dead_rate"
+]

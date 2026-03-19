@@ -1,0 +1,12 @@
+{
+  "off_peak_acceptance": 0.5916255712509155,
+  "avg_shift_hours": 0.1560463160276413,
+  "peak_hour_rate": 0.07919690757989883,
+  "night_rate": 0.050467599183321,
+  "morning_rate": 0.02894284576177597,
+  "avg_orders_per_shift": 0.02397484891116619,
+  "ld_rejection_rate": 0.023465517908334732,
+  "acceptance_rate": 0.018623488023877144,
+  "n_rides_observed": 0.016905859112739563,
+  "n_distinct_zones": 0.010751084424555302
+}

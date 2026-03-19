@@ -1,0 +1,12 @@
+[
+  "n_rides_observed",
+  "peak_hour_rate",
+  "morning_rate",
+  "night_rate",
+  "n_distinct_zones",
+  "acceptance_rate",
+  "ld_rejection_rate",
+  "avg_shift_hours",
+  "off_peak_acceptance",
+  "avg_orders_per_shift"
+]

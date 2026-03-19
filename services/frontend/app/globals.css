@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Google Fonts ─────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --ls-blue:        #4280FF;
+  --ls-canvas:      #0F1117;
+  --ls-panel:       #1A1F2E;
+  --ls-panel-hover: #1F2640;
+  --ls-border:      rgba(255, 255, 255, 0.08);
+  --ls-text:        #E5E7EB;
+  --ls-text-mid:    #9CA3AF;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--ls-canvas);
+  color: var(--ls-text);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbars ───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--ls-panel);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(66, 128, 255, 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(66, 128, 255, 0.6);
+}
+
+/* ── Panel base ───────────────────────────────────────────── */
+.panel {
+  background: var(--ls-panel);
+  border: 1px solid var(--ls-border);
+  border-radius: 0.75rem;
+}
+
+/* ── Loadshare blue button ────────────────────────────────── */
+.btn-primary {
+  background: var(--ls-blue);
+  color: #ffffff;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-primary:hover { background: #5590ff; }
+.btn-primary:active { transform: scale(0.97); }
+
+/* ── Severity badges ─────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.badge-critical { background: rgba(239,68,68,0.15);  color: #f87171; border-color: rgba(239,68,68,0.3); }
+.badge-warning  { background: rgba(249,115,22,0.15); color: #fb923c; border-color: rgba(249,115,22,0.3); }
+.badge-normal   { background: rgba(34,197,94,0.15);  color: #4ade80; border-color: rgba(34,197,94,0.3); }
+.badge-partial  { background: rgba(234,179,8,0.15);  color: #facc15; border-color: rgba(234,179,8,0.3); }
+.badge-failed   { background: rgba(239,68,68,0.15);  color: #f87171; border-color: rgba(239,68,68,0.3); }
+.badge-ok       { background: rgba(34,197,94,0.15);  color: #4ade80; border-color: rgba(34,197,94,0.3); }
+.badge-success  { background: rgba(34,197,94,0.15);  color: #4ade80; border-color: rgba(34,197,94,0.3); }
+
+/* ── React Flow overrides ─────────────────────────────────── */
+.react-flow__background {
+  background-color: var(--ls-panel) !important;
+}
+.react-flow__edge-path {
+  stroke: rgba(66, 128, 255, 0.5) !important;
+  stroke-width: 2 !important;
+}
+.react-flow__controls {
+  background: var(--ls-panel) !important;
+  border-color: var(--ls-border) !important;
+  box-shadow: none !important;
+}
+.react-flow__controls-button {
+  background: var(--ls-panel) !important;
+  border-color: var(--ls-border) !important;
+  fill: #9CA3AF !important;
+}
+.react-flow__controls-button:hover {
+  background: var(--ls-panel-hover) !important;
+}
+.react-flow__minimap {
+  background: var(--ls-panel) !important;
+  border: 1px solid var(--ls-border) !important;
+}
+
+/* ── Leaflet overrides ────────────────────────────────────── */
+.leaflet-container {
+  background: #0d1117 !important;
+  font-family: 'Inter', sans-serif !important;
+}
+.leaflet-control-zoom a {
+  background: var(--ls-panel) !important;
+  color: var(--ls-text) !important;
+  border-color: var(--ls-border) !important;
+}
+.leaflet-control-attribution {
+  background: rgba(15, 17, 23, 0.8) !important;
+  color: #6B7280 !important;
+  font-size: 10px !important;
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}

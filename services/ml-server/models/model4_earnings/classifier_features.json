@@ -1,0 +1,18 @@
+[
+  "persona_enc",
+  "hour_of_day",
+  "orders_completed",
+  "earnings_so_far",
+  "current_eph",
+  "idle_time_mins",
+  "dead_runs_count",
+  "zone_density",
+  "obs_point_mins",
+  "time_remaining_mins",
+  "total_shift_mins",
+  "eph_lag1_30min",
+  "eph_lag2_60min",
+  "eph_lag3_90min",
+  "eph_slope",
+  "eph_acceleration"
+]

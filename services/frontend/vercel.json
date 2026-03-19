@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/aria",
+      "permanent": false
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "model_name": "rider_persona_classifier",
+  "model_type": "XGBClassifier",
+  "target": "persona_label",
+  "classes": {
+    "0": "supplementary",
+    "1": "dedicated"
+  },
+  "n_features": 10,
+  "training_rows": 8499,
+  "test_rows": 1501,
+  "best_params": {
+    "max_depth": 3,
+    "learning_rate": 0.2,
+    "n_estimators": 100,
+    "subsample": 1.0,
+    "colsample_bytree": 1.0,
+    "min_child_weight": 3
+  },
+  "metrics": {
+    "f1": 0.8986835107652095,
+    "auc": 0.9273042226648145,
+    "precision": 0.8981019390857871,
+    "recall": 0.899400399733511,
+    "confusion_matrix": [
+      [
+        1133,
+        70
+      ],
+      [
+        81,
+        217
+      ]
+    ]
+  },
+  "noise_level": 0.05,
+  "class_balance": {
+    "supplementary": 8018,
+    "dedicated": 1982
+  },
+  "notes": "Trained on synthetic data grounded in Loadshare article. 80/20 supplementary/dedicated split. 15% overlap noise injected to prevent overfit to clean synthetic clusters. Features computed from first 5-10 rides only.",
+  "saved_at": "2026-03-06T06:25:55.131979",
+  "model_version": "v1.0_20260306"
+}

@@ -1,0 +1,39 @@
+{
+  "regressor": {
+    "dead_runs_count": 0.7884628176689148,
+    "current_eph": 0.20008721947669983,
+    "eph_lag1_30min": 0.0018123877234756947,
+    "persona_enc": 0.001656611217185855,
+    "eph_lag2_60min": 0.0014219306176528335,
+    "eph_lag3_90min": 0.0011646831408143044,
+    "time_remaining_mins": 0.0006919832667335868,
+    "total_shift_mins": 0.0006368442554958165,
+    "obs_point_mins": 0.0006103846826590598,
+    "earnings_so_far": 0.0005667572841048241,
+    "eph_slope": 0.0005372962914407253,
+    "zone_density": 0.000501162139698863,
+    "idle_time_mins": 0.00047998264199122787,
+    "hour_of_day": 0.0004581125685945153,
+    "orders_completed": 0.0004577942891046405,
+    "eph_acceleration": 0.00045403529657050967,
+    "eph_target": 0.0
+  },
+  "classifier": {
+    "dead_runs_count": 0.8201174139976501,
+    "persona_enc": 0.057385869324207306,
+    "current_eph": 0.04267403855919838,
+    "orders_completed": 0.033704087138175964,
+    "time_remaining_mins": 0.009662419557571411,
+    "obs_point_mins": 0.004795748274773359,
+    "total_shift_mins": 0.0044843885116279125,
+    "zone_density": 0.003483780659735203,
+    "eph_lag2_60min": 0.003478222992271185,
+    "eph_lag1_30min": 0.0033457118552178144,
+    "idle_time_mins": 0.0032295703422278166,
+    "eph_lag3_90min": 0.0029774513095617294,
+    "eph_acceleration": 0.0029153411742299795,
+    "hour_of_day": 0.0026711001992225647,
+    "earnings_so_far": 0.002598120365291834,
+    "eph_slope": 0.0024767150171101093
+  }
+}

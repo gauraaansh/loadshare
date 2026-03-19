@@ -1,0 +1,61 @@
+{
+  "Weatherconditions": {
+    "Sunny": 0,
+    "Cloudy": 1,
+    "Windy": 2,
+    "Fog": 3,
+    "Sandstorms": 4,
+    "Stormy": 5
+  },
+  "Road_traffic_density": {
+    "Low": 0,
+    "Medium": 1,
+    "High": 2,
+    "Jam": 3
+  },
+  "Type_of_vehicle": {
+    "bicycle": 0,
+    "electric_scooter": 1,
+    "scooter": 2,
+    "motorcycle": 3
+  },
+  "Type_of_order": {
+    "Snack": 0,
+    "Drinks": 1,
+    "Meal": 2,
+    "Buffet": 3
+  },
+  "City": {
+    "Urban": 0,
+    "Metropolitian": 1,
+    "Semi-Urban": 2
+  },
+  "Festival": {
+    "No": 0,
+    "Yes": 1
+  },
+  "city_name": {
+    "Agra": 0,
+    "Allahabad": 1,
+    "Aurangabad": 2,
+    "Bangalore": 3,
+    "Bhopal": 4,
+    "Chennai": 5,
+    "Coimbatore": 6,
+    "Dehradun": 7,
+    "Goa": 8,
+    "Hyderabad": 9,
+    "Indore": 10,
+    "Jaipur": 11,
+    "Kanpur": 12,
+    "Kochi": 13,
+    "Kolkata": 14,
+    "Ludhiana": 15,
+    "Mumbai": 16,
+    "Mysore": 17,
+    "Pune": 18,
+    "Ranchi": 19,
+    "Surat": 20,
+    "Vadodara": 21
+  }
+}

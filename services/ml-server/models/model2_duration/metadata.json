@@ -1,0 +1,47 @@
+{
+  "model_name": "delivery_duration_scorer",
+  "model_type": "XGBRegressor",
+  "target": "Time_taken(min)",
+  "target_unit": "minutes",
+  "n_features": 18,
+  "training_rows": 35660,
+  "test_rows": 6293,
+  "best_params": {
+    "max_depth": 6,
+    "learning_rate": 0.1,
+    "n_estimators": 200,
+    "subsample": 1.0,
+    "colsample_bytree": 1.0,
+    "min_child_weight": 3
+  },
+  "best_n_estimators": 165,
+  "metrics": {
+    "rmse": 3.9540061950683594,
+    "mae": 3.1732168197631836,
+    "r2": 0.8199813663959503
+  },
+  "feature_medians": {
+    "distance_km": 9.193,
+    "Road_traffic_density_enc": 1.0,
+    "order_hour": 19.0,
+    "is_lunch_peak": 0.0,
+    "is_dinner_peak": 0.0,
+    "is_weekend": 0.0,
+    "day_of_week": 3.0,
+    "month": 3.0,
+    "City_enc": 1.0,
+    "city_name_enc": 11.0,
+    "Weatherconditions_enc": 2.0,
+    "Type_of_vehicle_enc": 3.0,
+    "Type_of_order_enc": 1.0,
+    "Festival_enc": 0.0,
+    "multiple_deliveries": 1.0,
+    "Delivery_person_Age": 30.0,
+    "Delivery_person_Ratings": 4.7,
+    "Vehicle_condition": 1.0
+  },
+  "split_type": "time_based_chronological",
+  "notes": "Trained on real food delivery dataset (41,953 rows, 22 Indian cities). Time-based split: train=oldest 70%, test=most recent 15%. Used as baseline for restaurant ripple detection: deviation = actual - predicted. Consistent positive deviation per restaurant signals the restaurant ripple.",
+  "saved_at": "2026-03-06T06:25:59.175927",
+  "model_version": "v1.0_20260306"
+}

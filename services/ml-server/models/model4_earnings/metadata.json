@@ -1,0 +1,56 @@
+{
+  "model_name": "earnings_trajectory_forecaster",
+  "regressor_type": "XGBRegressor",
+  "classifier_type": "XGBClassifier (no calibration \u2014 binary flag)",
+  "n_regressor_features": 17,
+  "n_classifier_features": 16,
+  "training_rows": 17000,
+  "test_rows": 3000,
+  "below_threshold_rate": 0.34355,
+  "reg_best_params": {
+    "max_depth": 5,
+    "learning_rate": 0.05,
+    "n_estimators": 300,
+    "subsample": 0.8,
+    "colsample_bytree": 1.0,
+    "min_child_weight": 1
+  },
+  "clf_best_params": {
+    "max_depth": 6,
+    "learning_rate": 0.1,
+    "n_estimators": 100,
+    "subsample": 0.8,
+    "colsample_bytree": 1.0,
+    "min_child_weight": 3
+  },
+  "regressor_metrics": {
+    "rmse": 2.6441311836242676,
+    "mae": 2.1125428676605225,
+    "r2": 0.9761024080216885
+  },
+  "classifier_metrics": {
+    "f1": 0.9707166065157354,
+    "auc": 0.9970732549227629,
+    "precision": 0.9708263748325344,
+    "recall": 0.9706666666666667,
+    "confusion_matrix": [
+      [
+        1894,
+        52
+      ],
+      [
+        36,
+        1018
+      ]
+    ]
+  },
+  "eph_ranges": {
+    "supplementary_target": 95.0,
+    "dedicated_target": 110.0,
+    "crisis_min": 70.0,
+    "crisis_max": 85.0
+  },
+  "notes": "Trained on synthetic data grounded in Loadshare article. eph_target excluded from classifier features to prevent shortcut learning. Momentum features (eph_slope, eph_acceleration) added explicitly. Two separate models: regressor for EPH projection, classifier for binary alert flag. Article ground truth: struggling riders Rs.70-85, target Rs.90-110.",
+  "saved_at": "2026-03-06T06:26:07.739147",
+  "model_version": "v1.0_20260306"
+}

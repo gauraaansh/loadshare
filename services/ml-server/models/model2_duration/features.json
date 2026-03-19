@@ -1,0 +1,20 @@
+[
+  "distance_km",
+  "Road_traffic_density_enc",
+  "order_hour",
+  "is_lunch_peak",
+  "is_dinner_peak",
+  "is_weekend",
+  "day_of_week",
+  "month",
+  "City_enc",
+  "city_name_enc",
+  "Weatherconditions_enc",
+  "Type_of_vehicle_enc",
+  "Type_of_order_enc",
+  "Festival_enc",
+  "multiple_deliveries",
+  "Delivery_person_Age",
+  "Delivery_person_Ratings",
+  "Vehicle_condition"
+]

@@ -1,0 +1,20 @@
+{
+  "Road_traffic_density_enc": 0.18914708495140076,
+  "multiple_deliveries": 0.17969129979610443,
+  "Delivery_person_Ratings": 0.14354082942008972,
+  "Festival_enc": 0.13819213211536407,
+  "Vehicle_condition": 0.09848306328058243,
+  "Weatherconditions_enc": 0.09223190695047379,
+  "Delivery_person_Age": 0.05915604531764984,
+  "distance_km": 0.04094105586409569,
+  "City_enc": 0.028713349252939224,
+  "is_dinner_peak": 0.00812541227787733,
+  "order_hour": 0.004562491085380316,
+  "is_lunch_peak": 0.002885808004066348,
+  "month": 0.002784425625577569,
+  "Type_of_vehicle_enc": 0.002640695311129093,
+  "Type_of_order_enc": 0.0023543951101601124,
+  "city_name_enc": 0.0023098208475857973,
+  "day_of_week": 0.002162373624742031,
+  "is_weekend": 0.0020778747275471687
+}

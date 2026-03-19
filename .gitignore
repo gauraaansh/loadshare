@@ -20,9 +20,32 @@ logs/
 *.swp
 *.swo
 *.swn
+*.swm
 .DS_Store
 .idea/
 .vscode/
+
+# ── Node / Frontend ───────────────────────────────────────────
+node_modules/
+services/frontend/node_modules/
+
+# ── Clutter / personal files ──────────────────────────────────
+ARIA_Project_Brief.docx
+ARIA_Project_Brief_v3.docx
+DOCS_STRUCTURE.md
+PROGRESS.md
+cheat-sheet.py
+collect_aria_diag.sh
+test-ri.sh
+docs/
+services/frontend/README.md
+services/frontend/next-env.d.ts
+services/frontend/tsconfig.tsbuildinfo
+
+# ── Replaced / superseded files ───────────────────────────────
+services/data-pipeline/generators/synthetic_generator.py
+services/data-pipeline/seeders/seed_database.py
+services/data-pipeline/scripts/download_kaggle.py
 
 # ── Data & Datasets ───────────────────────────────────────────
 services/data-pipeline/kaggle_data/
