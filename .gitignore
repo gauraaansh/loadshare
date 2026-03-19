@@ -1,0 +1,41 @@
+# ── Python ────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+
+# ── Environment / Secrets ─────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Logs ──────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Editor / OS ───────────────────────────────────────────────
+*.swp
+*.swo
+*.swn
+.DS_Store
+.idea/
+.vscode/
+
+# ── Data & Datasets ───────────────────────────────────────────
+services/data-pipeline/kaggle_data/
+services/data-pipeline/synthetic/
+services/data-pipeline/generators/synthetic_data/
+services/data-pipeline/train_final.csv
+
+# ── ML model binaries (keep metadata JSON, ignore binary weights)
+*.joblib
+*.pkl
+*.pickle
+
+# ── Frontend build output ─────────────────────────────────────
+services/frontend/.next/
+services/frontend/out/
+services/frontend/build/
