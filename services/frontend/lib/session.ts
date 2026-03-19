@@ -24,14 +24,14 @@ async function hmacHex(secret: string, data: string): Promise<string> {
 }
 
 export async function createSessionToken(): Promise<string> {
-  const secret = process.env.ARIA_SESSION_SECRET ?? "aria-dev-secret-change-me-32ch";
+  const secret = process.env.ARIA_SESSION_SECRET ?? "";
   const ts     = String(Date.now());
   const sig    = await hmacHex(secret, ts);
   return `${ts}.${sig}`;
 }
 
 export async function verifySessionToken(value: string): Promise<boolean> {
-  const secret = process.env.ARIA_SESSION_SECRET ?? "aria-dev-secret-change-me-32ch";
+  const secret = process.env.ARIA_SESSION_SECRET ?? "";
   const dot    = value.lastIndexOf(".");
   if (dot === -1) return false;
 
