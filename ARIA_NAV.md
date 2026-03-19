@@ -240,7 +240,7 @@ technical content is fetched from ARIA_DOCS.md at answer time.
 # 5. ML Models
 
 ## 5.0 All Four ML Models — Summary
-**Keywords:** Model 3 dead zone risk predictor, Model 4 eph_target label leakage, all 4 ML models, four models summary, Model 1 2 3 4 overview, what models does ARIA have, complete model list
+**Keywords:** Model 3 dead zone risk predictor, Model 4 eph_target label leakage, all 4 ML models, four models summary, Model 1 2 3 4 overview, what models does ARIA have, complete model list, trained, how trained, how models trained, model training process, models used, what models used, models used in ARIA
 **Summary:** Four XGBoost models: Model 1 Rider Persona Classifier (binary: supplementary/dedicated, synthetic data, EPH target setting). Model 2 Delivery Duration Scorer (regressor, real Kaggle data, 41k rows). Model 3 Dead Zone Risk Predictor (two-stage classifier+regressor, CalibratedClassifierCV). Model 4 Earnings Trajectory Forecaster (two-stage: Stage 1 regressor predicts EPH, Stage 2 classifier predicts miss. eph_target is injected into regressor features but deliberately EXCLUDED from classifier features to prevent shortcut learning / label leakage).
 
 ## 5.1 Shared: Why XGBoost — All Alternatives Considered
