@@ -2,7 +2,7 @@
 
 `Python` `FastAPI` `LangGraph` `LangSmith` `vLLM` `XGBoost` `SHAP` `pgvector` `TimescaleDB` `PostGIS` `Redis` `Next.js` `Docker`
 
-> **The architecture of ARIA is a direct response to the April 2023 rider retention crisis at Loadshare, documented in the research publicly published in January 2025 by Arun Ravichandran (Ex Senior Program Manager).** 
+> **The architecture of ARIA is a direct response to the April 2023 rider retention crisis at Loadshare, documented in the research publicly published in January 2025 by Arun Ravichandran (Ex Senior Program Manager).** <br>
 >**[Beyond the Extra Mile: A Tale of Riders, Routes and Retention](https://medium.com/@designwithroony/beyond-the-extra-mile-a-tale-of-riders-routes-and-retention-df49e6be8c42)**
 
 ---
