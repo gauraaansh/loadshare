@@ -217,7 +217,6 @@ export function KpiStrip() {
       {/* Brand wordmark */}
       <div className="flex items-center gap-2 px-5 border-r border-white/[0.06] h-full">
         <span className="text-ls-blue font-bold text-lg tracking-tight">ARIA</span>
-        <span className="text-gray-600 text-xs hidden sm:block">by Loadshare</span>
       </div>
 
       {/* Sim Clock */}
