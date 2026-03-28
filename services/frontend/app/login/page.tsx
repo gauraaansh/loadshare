@@ -61,7 +61,6 @@ export default function LoginPage() {
           <p className="text-gray-500 text-sm mt-1">
             Autonomous Rider Intelligence &amp; Analytics
           </p>
-          <p className="text-gray-600 text-xs mt-0.5">by Loadshare Networks</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
