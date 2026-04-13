@@ -11,12 +11,12 @@
 import { useState, useEffect, useCallback } from "react";
 
 const SERVICES = [
-  { name: "Event Stream / Simulator",       port: "8003" },
-  { name: "MCP Server / Agent Orchestrator", port: "8001" },
-  { name: "ML Inference Server",             port: "8002" },
-  { name: "vLLM  ·  Qwen2.5-32B-Instruct",  port: "8000" },
-  { name: "PostgreSQL + TimescaleDB",        port: "5432" },
-  { name: "Redis",                           port: "6379" },
+  "Event Stream / Simulator",
+  "MCP Server / Agent Orchestrator",
+  "ML Inference Server",
+  "vLLM  ·  Qwen2.5-32B-Instruct",
+  "PostgreSQL + TimescaleDB",
+  "Redis",
 ];
 
 const POLL_INTERVAL = 30; // seconds between auto-checks
@@ -96,16 +96,16 @@ export function OfflinePage() {
 
         {/* Service list */}
         <div className="space-y-1.5 mb-8">
-          {SERVICES.map((svc) => (
+          {SERVICES.map((name) => (
             <div
-              key={svc.port}
+              key={name}
               className="flex items-center justify-between px-3 py-2 rounded-lg"
               style={{ background: "#0F1117" }}
             >
-              <span className="text-sm text-gray-400">{svc.name}</span>
+              <span className="text-sm text-gray-400">{name}</span>
               <div className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-gray-700" />
-                <span className="text-xs text-gray-600 tabular-nums">:{svc.port}</span>
+                <span className="text-xs text-gray-600">Offline</span>
               </div>
             </div>
           ))}
