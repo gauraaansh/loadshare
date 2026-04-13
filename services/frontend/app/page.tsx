@@ -17,23 +17,8 @@ import { RiderTable }      from "@/components/tables/RiderTable";
 import { RestaurantTable } from "@/components/tables/RestaurantTable";
 import { DashboardShell }  from "@/components/shared/DashboardShell";
 import { OfflinePage }     from "@/components/shared/OfflinePage";
+import { isMcpReachable }  from "@/lib/serverHealth";
 import { verifySessionToken, COOKIE_NAME } from "@/lib/session";
-
-const MCP_INTERNAL = process.env.MCP_INTERNAL_URL ?? "http://aria-mcp-server:8001";
-const MCP_API_KEY  = process.env.MCP_API_KEY       ?? "aria_mcp_key_change_me";
-
-async function isMcpReachable(): Promise<boolean> {
-  try {
-    const res = await fetch(`${MCP_INTERNAL}/health`, {
-      headers: { "X-API-Key": MCP_API_KEY },
-      signal:  AbortSignal.timeout(3_000),
-      next:    { revalidate: 0 },
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
-}
 
 export default async function Dashboard() {
   const cookieStore = await cookies();
