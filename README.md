@@ -5,6 +5,11 @@
 > **The architecture of ARIA is a direct response to the April 2023 rider retention crisis at Loadshare, documented in the research publicly published in January 2025 by Arun Ravichandran (Ex Senior Program Manager).** <br>
 >**[Beyond the Extra Mile: A Tale of Riders, Routes and Retention](https://medium.com/@designwithroony/beyond-the-extra-mile-a-tale-of-riders-routes-and-retention-df49e6be8c42)**
 
+
+Documentation CHATBOT : https://gauraansh.tech/aria/docs-chat
+
+Live App : https://gauraansh.tech/aria/login 
+
 ---
 
 ## Overview
@@ -87,7 +92,7 @@ Candidates below `similarity < 0.65` are dropped. Top-3 episodes (capped at 1200
 
 ## Documentation Chatbot — Dual-Mode RAG
 
-ARIA ships a documentation chatbot exposing full technical depth to interviewers, with two retrieval modes switchable from the UI:
+ARIA ships a documentation chatbot exposing full technical depth, with two retrieval modes switchable from the UI:
 
 **Vector mode** — pgvector cosine similarity over Ollama qwen3-embedding (4096-dim) chunks stored with HNSW index.
 
